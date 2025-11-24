@@ -1,8 +1,11 @@
+// auth.ts
+
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "./lib/db";
 import { getUserById } from "./modules/auth/actions";
-import authConfig from "./auth.config";
+import authConfig from "./auth.config"; // Assuming this is defined and exports providers
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks:{
     async signIn({user,account}){
@@ -30,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             tokenType: account.token_type,
                             scope: account.scope,
                             idToken: account.id_token,
-                            sessionState: account.sesson_state,
+                            sessionState: account.session_state, // Corrected typo here
                         }
                     }
                 }
@@ -93,8 +96,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
          return session;
     }
   },
+  
+  // --- ADDED CONFIGURATION TO FIX REDIRECTS ---
+  session: {
+      strategy: "jwt",
+  },
+  // --- END ADDED CONFIGURATION ---
+  
   secret:process.env.AUTH_SECRET,
   adapter:PrismaAdapter(db),
-  ...authConfig
-
+  ...authConfig // Ensure this line remains at the end
 });
