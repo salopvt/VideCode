@@ -4,18 +4,16 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
 export const getUserById= async(id:string)=>{
-    try{
-        const user=await db.user.findUnique({
-                    where:{id},
-                    include:{
-                        accounts:true
-                    }
-                })
-                return user
-            } catch (error) {
-                console.log(error)
-                return null
-            }
+     if (!id) return null
+
+  try {
+    return await db.user.findUnique({
+      where: { id }
+    })
+  } catch (e) {
+    console.error("getUserById error:", e)
+    return null
+  }
         }
 
 export const getAccountByUserId= async(userId:string)=>{
