@@ -2,19 +2,22 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import {ObjectId} from "bson"
 
-export const getUserById= async(id:string)=>{
-     if (!id) return null
+export const getUserById = async (id: string) => {
+  if (!id) return null
 
   try {
     return await db.user.findUnique({
-      where: { id }
+      where: {
+        id: new ObjectId(id)
+      }
     })
   } catch (e) {
     console.error("getUserById error:", e)
     return null
   }
-        }
+}
 
 export const getAccountByUserId= async(userId:string)=>{
     try {
